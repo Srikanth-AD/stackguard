@@ -5,6 +5,21 @@
   "bin": { "stackguard": "./dist/index.js" },
   "type": "module",
   "license": "MIT",
+  "author": "Srikanth AD",
+  "homepage": "https://github.com/Srikanth-AD/stackguard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Srikanth-AD/stackguard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Srikanth-AD/stackguard/issues"
+  },
+  "files": [
+    "dist",
+    "examples",
+    "LICENSE",
+    "README.md"
+  ],
   "keywords": [
     "ai-governance", "engineering-management", "developer-tools",
     "tech-stack", "policy-enforcement", "claude-code", "copilot",
