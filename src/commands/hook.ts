@@ -44,6 +44,34 @@ async function readStdin(): Promise<string> {
 }
 
 /**
+ * Parse the raw stdin payload Claude Code sends to a UserPromptSubmit hook.
+ * Returns null when the input is malformed, missing the prompt field, or the
+ * prompt is empty/whitespace-only — the hook should pass through silently in
+ * all of those cases. Pure (no I/O) so it's unit-testable.
+ */
+export function parseHookPayload(raw: string): HookPayload | null {
+  if (!raw?.trim()) return null
+
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch {
+    return null
+  }
+
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return null
+  }
+
+  const payload = parsed as HookPayload
+  if (typeof payload.prompt !== 'string' || !payload.prompt.trim()) {
+    return null
+  }
+
+  return payload
+}
+
+/**
  * Format violations into a single human-readable string suitable for stderr
  * (which Claude Code surfaces to the user when we exit 2).
  */
@@ -109,19 +137,13 @@ async function writeAudit(
  */
 export async function hookCommand(): Promise<void> {
   const raw = await readStdin()
-
-  let payload: HookPayload
-  try {
-    payload = JSON.parse(raw) as HookPayload
-  } catch {
-    // Malformed payload — let the prompt through and stay silent.
+  const payload = parseHookPayload(raw)
+  if (!payload) {
+    // Malformed payload, missing prompt, or empty prompt — pass through.
     process.exit(0)
   }
-
-  const prompt = typeof payload.prompt === 'string' ? payload.prompt : ''
-  if (!prompt.trim()) {
-    process.exit(0)
-  }
+  // parseHookPayload guarantees prompt is a non-empty string.
+  const prompt = payload.prompt!
 
   // Claude Code spawns hooks from its own cwd, but the project's
   // stackguard.json lives at the cwd Claude Code reports in the payload.

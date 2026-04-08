@@ -4,14 +4,25 @@ import chalk from 'chalk'
 import type { CheckResult, Violation } from '../types.js'
 
 const MAX_WIDTH = 72
+const REVISION_INNER = 58
 
-function truncate(s: string, n: number): string {
+/**
+ * Trim a string to at most `n` characters, appending an ellipsis (…) if it
+ * had to be cut. Strings already short enough are returned unchanged. The
+ * returned string is always at most `n` characters long.
+ */
+export function truncate(s: string, n: number): string {
   if (s.length <= n) return s
   return `${s.slice(0, n - 1)}…`
 }
 
-function wrap(text: string, width: number): string[] {
-  const words = text.split(/\s+/)
+/**
+ * Greedy word-wrap. Splits on any whitespace, then packs words into lines
+ * up to `width` characters. Words longer than `width` are placed on their
+ * own line (we never break inside a word).
+ */
+export function wrap(text: string, width: number): string[] {
+  const words = text.split(/\s+/).filter((w) => w.length > 0)
   const lines: string[] = []
   let current = ''
   for (const w of words) {
@@ -30,6 +41,40 @@ function wrap(text: string, width: number): string[] {
   return lines
 }
 
+/**
+ * Build the lines of a single violation block (without colors). Pure —
+ * exported for testing. The interactive renderer wraps these in chalk and
+ * sends them to stdout.
+ */
+export function formatViolationLines(v: Violation, index: number, total: number): string[] {
+  const lines: string[] = []
+  if (total > 1) {
+    lines.push(`(${index + 1}/${total})`)
+  }
+  lines.push(`"${truncate(v.quote, MAX_WIDTH - 2)}"`)
+  lines.push(`Rule:   ${truncate(v.rule, MAX_WIDTH - 8)}`)
+  lines.push(`Why:    ${truncate(v.explanation, MAX_WIDTH - 8)}`)
+  lines.push(`Level:  ${v.confidence.toUpperCase()} confidence`)
+  return lines
+}
+
+/**
+ * Build the lines of the suggested-revision box. Pure — exported for
+ * testing. The interactive renderer prints these in green.
+ */
+export function formatRevisionBox(revision: string): string[] {
+  const lines = wrap(revision, REVISION_INNER)
+  const top = `┌${'─'.repeat(REVISION_INNER + 2)}┐`
+  const bot = `└${'─'.repeat(REVISION_INNER + 2)}┘`
+  const out: string[] = ['Suggested revision:', top]
+  for (const ln of lines) {
+    const padded = ln.padEnd(REVISION_INNER, ' ')
+    out.push(`│ ${padded} │`)
+  }
+  out.push(bot)
+  return out
+}
+
 function ask(question: string): Promise<string> {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -44,28 +89,24 @@ function ask(question: string): Promise<string> {
 }
 
 function printViolation(v: Violation, index: number, total: number): void {
+  const lines = formatViolationLines(v, index, total)
   if (total > 1) {
-    console.log(chalk.bold(`(${index + 1}/${total})`))
+    console.log(chalk.bold(lines.shift()!))
   }
-  console.log(chalk.red(`"${truncate(v.quote, MAX_WIDTH - 2)}"`))
-  console.log(`Rule:   ${truncate(v.rule, MAX_WIDTH - 8)}`)
-  console.log(`Why:    ${truncate(v.explanation, MAX_WIDTH - 8)}`)
-  console.log(`Level:  ${v.confidence.toUpperCase()} confidence`)
+  // First remaining line is the quote — color it red.
+  console.log(chalk.red(lines.shift()!))
+  for (const ln of lines) {
+    console.log(ln)
+  }
   console.log('')
 }
 
 function printRevisionBox(revision: string): void {
-  const inner = 58
-  const lines = wrap(revision, inner)
-  const top = `┌${'─'.repeat(inner + 2)}┐`
-  const bot = `└${'─'.repeat(inner + 2)}┘`
-  console.log(chalk.green('Suggested revision:'))
-  console.log(top)
+  const lines = formatRevisionBox(revision)
+  console.log(chalk.green(lines.shift()!))
   for (const ln of lines) {
-    const padded = ln.padEnd(inner, ' ')
-    console.log(`│ ${padded} │`)
+    console.log(ln)
   }
-  console.log(bot)
   console.log('')
 }
 
