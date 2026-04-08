@@ -94,3 +94,83 @@ When prompting an AI coding assistant, do NOT ask it to:
 When in doubt, ask the AI to use the approved stack above.
 If you genuinely need an exception, file an RFC with @platform-eng
 before writing the prompt.
+
+---
+
+## Sample stackguard interactions
+
+Run them yourself with:
+
+```bash
+stackguard check "<prompt>" --policy ./policy.example.md
+```
+
+### Example 1 — explicit prohibited tech (HIGH confidence block)
+
+```
+$ stackguard check "add a MongoDB connection for user sessions"
+
+⚠  stackguard: guideline conflict detected
+──────────────────────────────────────────────────────────────────────
+
+"add a MongoDB connection for user sessions"
+Rule:   NEVER use MongoDB, DynamoDB, or any NoSQL store for primary
+        data.
+Why:    The prompt explicitly names MongoDB; Acme uses PostgreSQL
+        via @acme/db.
+Level:  HIGH confidence
+
+Suggested revision:
+┌──────────────────────────────────────────────────────────┐
+│ Add a Postgres-backed user_sessions table accessed via │
+│ @acme/db, with a parameterized query for lookups       │
+└──────────────────────────────────────────────────────────┘
+
+[P]roceed anyway  [R]evise  [S]how policy  [C]ancel
+```
+
+### Example 2 — custom security primitive (HIGH confidence block)
+
+```
+$ stackguard check "implement JWT auth from scratch with refresh tokens"
+
+⚠  stackguard: guideline conflict detected
+──────────────────────────────────────────────────────────────────────
+
+"implement JWT auth from scratch with refresh tokens"
+Rule:   NEVER implement JWT signing, verification, or refresh logic
+        from scratch. @acme/auth handles token lifecycle.
+Why:    The prompt asks for custom token logic, which the policy
+        delegates to the shared auth wrapper.
+Level:  HIGH confidence
+
+Suggested revision:
+┌──────────────────────────────────────────────────────────┐
+│ Add login and session handling using @acme/auth, which │
+│ manages token issuance and refresh                     │
+└──────────────────────────────────────────────────────────┘
+
+[P]roceed anyway  [R]evise  [S]how policy  [C]ancel
+```
+
+### Example 3 — vague prompt (PASSES)
+
+```
+$ stackguard check "build a settings page where users can change their display name"
+✓ stackguard: ok
+```
+
+The prompt doesn't name a banned library or pattern. The AI may
+use approved tools in its response — that's fine.
+
+### Example 4 — soft warning (LOW confidence, passes through)
+
+```
+$ stackguard check "add a date picker that handles timezones nicely"
+ℹ  stackguard: possible conflict (low confidence — passing through)
+"date picker that handles timezones" may conflict with "moment is prohibited…"
+```
+
+The model thinks this *might* drift toward `moment-timezone` but
+isn't sure. Per ADR-002, low-confidence violations don't interrupt
+the developer.
