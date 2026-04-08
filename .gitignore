@@ -2,5 +2,11 @@ node_modules/
 dist/
 *.js.map
 .env
+
+# stackguard.json is ignored at the TOOL level so we don't accidentally
+# commit a dev config for testing. Teams using stackguard SHOULD commit
+# their own stackguard.json — it contains no secrets and is the whole
+# point of the tool (shared, hash-locked policy config).
 stackguard.json
+
 *.local.md
