@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import os from 'node:os'
+import path from 'node:path'
 import type { Config } from '../types.js'
 
 const CONFIG_FILENAME = 'stackguard.json'
@@ -62,7 +62,7 @@ export async function loadConfig(): Promise<Config | null> {
 }
 
 export async function writeConfig(filePath: string, config: Partial<Config>): Promise<void> {
-  await fs.writeFile(filePath, JSON.stringify(config, null, 2) + '\n', 'utf-8')
+  await fs.writeFile(filePath, `${JSON.stringify(config, null, 2)}\n`, 'utf-8')
 }
 
 export function expandHome(p: string): string {

@@ -1,5 +1,5 @@
-import readline from 'node:readline'
 import { spawn } from 'node:child_process'
+import readline from 'node:readline'
 import chalk from 'chalk'
 import type { CheckResult, Violation } from '../types.js'
 
@@ -7,7 +7,7 @@ const MAX_WIDTH = 72
 
 function truncate(s: string, n: number): string {
   if (s.length <= n) return s
-  return s.slice(0, n - 1) + '…'
+  return `${s.slice(0, n - 1)}…`
 }
 
 function wrap(text: string, width: number): string[] {
@@ -20,7 +20,7 @@ function wrap(text: string, width: number): string[] {
       continue
     }
     if (current.length + 1 + w.length <= width) {
-      current += ' ' + w
+      current += ` ${w}`
     } else {
       lines.push(current)
       current = w
@@ -57,8 +57,8 @@ function printViolation(v: Violation, index: number, total: number): void {
 function printRevisionBox(revision: string): void {
   const inner = 58
   const lines = wrap(revision, inner)
-  const top = '┌' + '─'.repeat(inner + 2) + '┐'
-  const bot = '└' + '─'.repeat(inner + 2) + '┘'
+  const top = `┌${'─'.repeat(inner + 2)}┐`
+  const bot = `└${'─'.repeat(inner + 2)}┘`
   console.log(chalk.green('Suggested revision:'))
   console.log(top)
   for (const ln of lines) {

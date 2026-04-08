@@ -1,9 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk'
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import os from 'node:os'
+import path from 'node:path'
+import Anthropic from '@anthropic-ai/sdk'
 import chalk from 'chalk'
-import type { PolicyDocument, CheckResult, Violation } from '../types.js'
+import type { CheckResult, PolicyDocument, Violation } from '../types.js'
 
 const DEBUG_LOG = path.join(os.homedir(), '.stackguard', 'debug.log')
 
@@ -61,7 +61,7 @@ function passthrough(): CheckResult {
   }
 }
 
-function extractJson(text: string): string {
+export function extractJson(text: string): string {
   const trimmed = text.trim()
   // Strip markdown fences if present
   const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/)
@@ -126,7 +126,7 @@ ${prompt}`
   let parsed: any
   try {
     parsed = JSON.parse(extractJson(raw))
-  } catch (err) {
+  } catch (_err) {
     await logDebug(`Non-JSON response: ${raw}`)
     console.error(chalk.yellow('⚠  stackguard: malformed API response, passing through'))
     return passthrough()
@@ -160,5 +160,20 @@ ${prompt}`
     result.lowConfidenceOnly = true
   }
 
+  return result
+}
+
+/**
+ * Apply the "all-low-confidence violations pass through" rule.
+ * Exported for testing — see ADR-002.
+ */
+export function applyLowConfidenceOverride(result: CheckResult): CheckResult {
+  if (
+    !result.passed &&
+    result.violations.length > 0 &&
+    result.violations.every((v) => v.confidence === 'low')
+  ) {
+    return { ...result, passed: true, lowConfidenceOnly: true }
+  }
   return result
 }

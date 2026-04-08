@@ -1,12 +1,12 @@
-import os from 'node:os'
 import { spawn } from 'node:child_process'
+import os from 'node:os'
 import chalk from 'chalk'
-import { loadConfig } from '../lib/config.js'
-import { loadPolicy } from '../lib/policyLoader.js'
 import { checkPrompt } from '../lib/checker.js'
-import { renderCheckResult, showPolicyPaged } from '../lib/renderer.js'
+import { loadConfig } from '../lib/config.js'
 import { logEntry } from '../lib/logger.js'
-import type { Config, AuditEntry, CheckResult, PolicyDocument } from '../types.js'
+import { loadPolicy } from '../lib/policyLoader.js'
+import { renderCheckResult, showPolicyPaged } from '../lib/renderer.js'
+import type { AuditEntry, CheckResult, Config } from '../types.js'
 
 interface WrapOptions {
   policy?: string
@@ -66,7 +66,7 @@ export async function wrapCommand(rawArgs: string[], options: WrapOptions): Prom
   const args = rawArgs.slice(1)
 
   // Identify prompt
-  let promptIdx = findPromptArgIndex(args)
+  const promptIdx = findPromptArgIndex(args)
   let prompt: string | null = null
   if (promptIdx >= 0) {
     prompt = args[promptIdx]

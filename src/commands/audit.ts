@@ -10,7 +10,7 @@ interface AuditOptions {
 
 function truncate(s: string, n: number): string {
   if (s.length <= n) return s
-  return s.slice(0, n - 1) + '…'
+  return `${s.slice(0, n - 1)}…`
 }
 
 export async function auditCommand(options: AuditOptions): Promise<void> {
@@ -20,7 +20,7 @@ export async function auditCommand(options: AuditOptions): Promise<void> {
   const filters: { days?: number; user?: string } = {}
   if (options.days) {
     const n = parseInt(options.days, 10)
-    if (!isNaN(n)) filters.days = n
+    if (!Number.isNaN(n)) filters.days = n
   }
   if (options.user) filters.user = options.user
 

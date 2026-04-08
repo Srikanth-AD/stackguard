@@ -1,5 +1,5 @@
-import readline from 'node:readline'
 import path from 'node:path'
+import readline from 'node:readline'
 import chalk from 'chalk'
 import { writeConfig } from '../lib/config.js'
 import type { Config } from '../types.js'

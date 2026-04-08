@@ -7,7 +7,7 @@ export async function logEntry(entry: AuditEntry, logPath: string): Promise<void
   try {
     const expanded = expandHome(logPath)
     await fs.mkdir(path.dirname(expanded), { recursive: true })
-    await fs.appendFile(expanded, JSON.stringify(entry) + '\n', 'utf-8')
+    await fs.appendFile(expanded, `${JSON.stringify(entry)}\n`, 'utf-8')
   } catch {
     // Logging must never block the user
   }
@@ -40,7 +40,7 @@ export async function readEntries(
     const cutoff = Date.now() - filters.days * 86_400_000
     filtered = filtered.filter((e) => {
       const t = Date.parse(e.timestamp)
-      return !isNaN(t) && t >= cutoff
+      return !Number.isNaN(t) && t >= cutoff
     })
   }
   if (filters?.user) {

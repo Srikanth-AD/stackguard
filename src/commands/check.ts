@@ -1,11 +1,11 @@
 import os from 'node:os'
 import chalk from 'chalk'
-import { loadConfig } from '../lib/config.js'
-import { loadPolicy } from '../lib/policyLoader.js'
 import { checkPrompt } from '../lib/checker.js'
-import { renderCheckResult, showPolicyPaged } from '../lib/renderer.js'
+import { loadConfig } from '../lib/config.js'
 import { logEntry } from '../lib/logger.js'
-import type { Config, AuditEntry, CheckResult, PolicyDocument } from '../types.js'
+import { loadPolicy } from '../lib/policyLoader.js'
+import { renderCheckResult, showPolicyPaged } from '../lib/renderer.js'
+import type { AuditEntry, CheckResult, Config, PolicyDocument } from '../types.js'
 
 interface CheckOptions {
   policy?: string

@@ -1,9 +1,9 @@
 import { Command } from 'commander'
-import { initCommand } from './commands/init.js'
-import { checkCommand } from './commands/check.js'
-import { wrapCommand } from './commands/wrap.js'
 import { auditCommand } from './commands/audit.js'
+import { checkCommand } from './commands/check.js'
+import { initCommand } from './commands/init.js'
 import { policyCommand } from './commands/policy.js'
+import { wrapCommand } from './commands/wrap.js'
 
 const program = new Command()
 
