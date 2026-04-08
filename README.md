@@ -67,15 +67,55 @@ cd your-project
 stackguard init
 export ANTHROPIC_API_KEY=sk-ant-...
 
-# Direct check
+# Direct check (good for CI / one-offs)
 stackguard check "implement token signing from scratch"
 
-# Wrap your AI assistant
+# Wrap an AI CLI (catches one-shot invocations)
 stackguard wrap -- claude "add a database connection"
-
-# Set it as your default
-alias claude='stackguard wrap -- claude'
 ```
+
+---
+
+## Integrating with Claude Code
+
+If your team uses Claude Code, **install stackguard as a `UserPromptSubmit`
+hook**. Hooks fire on every prompt — including inside the interactive REPL —
+so stackguard sees prompts that a shell alias would miss.
+
+```bash
+cd your-project
+stackguard install-hook        # writes .claude/settings.json
+git add .claude/settings.json  # commit so the rest of the team gets it
+```
+
+Now every prompt you submit to Claude Code in this project is checked first.
+A clean prompt passes through invisibly. A blocked prompt shows the violation
+in the Claude Code UI and waits for you to revise.
+
+**Block mode vs warn mode:** in `block` mode the hook returns exit 2 and
+Claude Code refuses to send the prompt. In `warn` mode the violation gets
+injected as a system reminder so the model can see it and respond
+accordingly, but the prompt still goes through. Set this in `stackguard.json`.
+
+**Per-project vs global:** by default `install-hook` writes to the
+project-local `.claude/settings.json` so it's committable and team-wide. Pass
+`--global` to write to `~/.claude/settings.json` if you want stackguard
+running for every project on your machine. Projects without their own
+`stackguard.json` pass through silently in either case.
+
+**Removal:** `stackguard install-hook --uninstall` (add `--global` to match).
+
+### When to use `wrap` vs the hook
+
+| Tool | Use the hook | Use the alias |
+|------|:---:|:---:|
+| Claude Code (interactive REPL) | ✅ | ❌ — REPL prompts bypass the alias |
+| Claude Code (`claude "one-shot"`) | ✅ | ✅ |
+| Cursor / other CLIs without a hook system | ❌ | ✅ |
+| CI scripts running `claude --print` | ✅ | ✅ |
+
+The hook is the right answer when it's available. The alias is the fallback
+for AI CLIs that don't expose a hook protocol yet.
 
 ---
 

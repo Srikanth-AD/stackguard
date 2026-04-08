@@ -6,7 +6,31 @@ the project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+- **`stackguard hook`** — Claude Code `UserPromptSubmit` hook entry point.
+  Reads the JSON envelope from stdin (`{prompt, cwd, session_id, ...}`),
+  chdirs into the payload's `cwd` so walk-up config discovery finds the
+  right `stackguard.json`, runs the check, and exits per the Claude Code
+  contract: exit 0 to allow (with optional stdout context), exit 2 to
+  block (with stderr containing the user-facing reason).
+- **`stackguard install-hook`** — idempotently merges the stackguard hook
+  into `.claude/settings.json` (project-local) or `~/.claude/settings.json`
+  with `--global`. Preserves all unrelated keys and unrelated hook events.
+  `--uninstall` removes the entry and prunes empty groups.
+- **`'blocked'`** action type added to `AuditEntry` for hook-mode logging.
+- README section *Integrating with Claude Code* explaining the hook flow,
+  warn vs block mode behavior in hooks, and a comparison table for when
+  to use the hook vs the shell alias.
+
+### Fixed
+- **`stackguard wrap` argv parsing.** The previous implementation relied on
+  commander's option parser, which mangled pass-through arguments — running
+  `stackguard wrap --claude "test"` (no `--` separator) deposited
+  `--claude` into `cmd.args[0]` and the wrap code blindly tried to spawn
+  it, producing a confusing `ENOENT`. Wrap now bypasses commander entirely
+  and parses argv itself via a new `parseWrapArgs` helper. Both
+  `wrap claude "x"` and `wrap -- claude "x"` work, and a leading `-` on
+  the resolved command now produces a pointed error.
 
 ## [0.1.0] — 2026-04-07
 
