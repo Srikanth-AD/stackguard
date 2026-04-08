@@ -35,7 +35,7 @@ export interface AuditEntry {
   timestamp: string
   prompt: string
   violations: Violation[]
-  action: 'passed' | 'overridden' | 'revised' | 'cancelled'
+  action: 'passed' | 'overridden' | 'revised' | 'cancelled' | 'blocked'
   overrideReason?: string
   revisedPrompt?: string
   user: string

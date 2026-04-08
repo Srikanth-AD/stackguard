@@ -1,7 +1,9 @@
 import { Command } from 'commander'
 import { auditCommand } from './commands/audit.js'
 import { checkCommand } from './commands/check.js'
+import { hookCommand } from './commands/hook.js'
 import { initCommand } from './commands/init.js'
+import { installHookCommand } from './commands/installHook.js'
 import { policyCommand } from './commands/policy.js'
 import { wrapEntrypoint } from './commands/wrap.js'
 
@@ -88,6 +90,33 @@ if (process.argv[2] === 'wrap') {
       try {
         const merged = { ...program.opts() }
         await policyCommand(subcommand, merged)
+      } catch (err) {
+        console.error((err as Error).message)
+        process.exit(1)
+      }
+    })
+
+  program
+    .command('hook')
+    .description('Run as a Claude Code UserPromptSubmit hook (reads JSON from stdin)')
+    .action(async () => {
+      try {
+        await hookCommand()
+      } catch (err) {
+        // Hook must never block the user because of its own bugs.
+        console.error((err as Error).message)
+        process.exit(0)
+      }
+    })
+
+  program
+    .command('install-hook')
+    .description('Install stackguard as a Claude Code UserPromptSubmit hook')
+    .option('--global', 'install to ~/.claude/settings.json (default: project-local)')
+    .option('--uninstall', 'remove the stackguard hook instead of installing it')
+    .action(async (opts: any) => {
+      try {
+        await installHookCommand(opts)
       } catch (err) {
         console.error((err as Error).message)
         process.exit(1)
