@@ -6,13 +6,19 @@ the project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.1.0] — 2026-04-07
+
 ### Added
-- Biome for linting and formatting (replaces a future need for
-  ESLint + Prettier with a single dependency).
+- Biome for linting and formatting (one dependency replaces both
+  ESLint and Prettier).
 - `node:test` unit suites for the four pure modules (`config`,
   `logger`, `policyLoader`, `checker`) — 27 tests, no API key needed.
-- CI now runs Biome and the test suite on every push and PR.
-- GitHub issue templates for bug reports and feature requests.
+- CI runs Biome and the test suite on every push and PR across
+  Node 20/22 on Linux and macOS.
+- GitHub issue templates for bug reports and feature requests, plus
+  a Discussions link for open-ended questions.
 - This `CHANGELOG.md`.
 
 ### Changed
@@ -20,6 +26,8 @@ the project adheres to [Semantic Versioning](https://semver.org/).
   now exported from `checker.ts` so the JSON-extraction and
   low-confidence flip logic can be unit-tested without hitting the
   Anthropic API.
+- Marked the package `"private": true` in `package.json` to prevent
+  accidental `npm publish` while we soak v0.1.0 with internal users.
 
 ## [0.1.0-preview] — 2026-04-07
 
@@ -48,5 +56,6 @@ Initial public preview.
   log format choices
 - GitHub Actions CI on Node 20/22, Linux + macOS
 
-[Unreleased]: https://github.com/Srikanth-AD/stackguard/compare/v0.1.0-preview...HEAD
+[Unreleased]: https://github.com/Srikanth-AD/stackguard/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Srikanth-AD/stackguard/compare/v0.1.0-preview...v0.1.0
 [0.1.0-preview]: https://github.com/Srikanth-AD/stackguard/releases/tag/v0.1.0-preview

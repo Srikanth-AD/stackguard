@@ -1,6 +1,7 @@
 {
   "name": "stackguard",
   "version": "0.1.0",
+  "private": true,
   "description": "Pre-prompt policy enforcement for AI coding assistants. Checks developer prompts against company engineering guidelines before they reach the AI.",
   "bin": {
     "stackguard": "./dist/index.js"
