@@ -1,0 +1,12 @@
+{
+  "policySource": "./ENGINEERING_GUIDELINES.md",
+  "policyHash": "sha256:replace-with-output-of-stackguard-policy-hash",
+  "mode": "block",
+  "model": "claude-haiku-4-5-20251001",
+  "logOverrides": true,
+  "logPath": "~/.stackguard/audit.jsonl",
+  "ignorePatterns": [
+    "^(what|how|why|explain|describe|list|show me|tell me)",
+    "^(fix|debug|help me understand|what does this|walk me through)"
+  ]
+}
