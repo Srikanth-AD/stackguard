@@ -2,9 +2,10 @@
 
 > Pre-prompt policy enforcement for AI coding assistants.
 
-[![npm version](https://img.shields.io/badge/npm-v0.1.0-blue.svg)]()
-[![license](https://img.shields.io/badge/license-MIT-green.svg)]()
-[![node](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)]()
+[![CI](https://github.com/Srikanth-AD/stackguard/actions/workflows/ci.yml/badge.svg)](https://github.com/Srikanth-AD/stackguard/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
+[![Biome](https://img.shields.io/badge/lint-biome-60a5fa.svg)](https://biomejs.dev/)
 
 ---
 
