@@ -9,7 +9,7 @@ assignees: ''
 ## What command did you run?
 
 ```bash
-# e.g. stackguard check "implement JWT auth from scratch"
+# e.g. stackguard check "implement token signing from scratch"
 ```
 
 ## What did you expect to happen?

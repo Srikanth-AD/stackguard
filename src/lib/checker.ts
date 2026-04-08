@@ -17,11 +17,13 @@ RULES FOR FLAGGING:
 
 Only flag prompts that explicitly name a prohibited technology,
 library, pattern, or approach.
-Do NOT flag vague prompts ("build a login page") — the developer
-has not specified a prohibited approach.
-DO flag "implement JWT auth from scratch" if custom JWT is banned.
-DO flag "add MongoDB" if policy requires PostgreSQL.
-DO flag "use lodash to filter" if lodash is prohibited.
+Do NOT flag vague prompts ("build a login page", "add a user
+profile screen") — the developer has not specified a prohibited
+approach yet, so there is nothing to compare to the policy.
+DO flag prompts that name a specific library, framework, database,
+service, or pattern that the policy excludes. The match is between
+the prompt's explicit words and the policy's explicit words — not
+between your own opinion about the named thing and the policy.
 
 Confidence HIGH: prohibited thing is explicitly and unambiguously named.
 Confidence MEDIUM: likely prohibited but slightly indirect.

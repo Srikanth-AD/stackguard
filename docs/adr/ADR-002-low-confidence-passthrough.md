@@ -23,8 +23,9 @@ note instead of an interactive blocking UI.
 - **Low confidence = ambiguous = not worth blocking for.** The model
   itself is signaling uncertainty. Acting decisively on uncertain
   signals erodes trust in the tool.
-- **High and medium confidence violations are explicit** ("use
-  MongoDB", "implement JWT from scratch") and worth interrupting for.
+- **High and medium confidence violations are explicit** — the
+  prompt names a specific prohibited library, framework, or
+  pattern by name — and worth interrupting for.
 
 ## Consequences
 

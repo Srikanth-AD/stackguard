@@ -12,16 +12,16 @@
 ## The problem
 
 Your team agreed last quarter that all new auth flows go through
-`@acme/auth`. Then a developer opens Cursor and types
-*"implement JWT auth from scratch with refresh tokens"*. The AI
-happily produces 200 lines of custom token signing code. By the time
-code review catches it three days later, the developer has shipped
-two more features on top and is deep in a different branch.
+your shared auth wrapper. Then a developer opens their AI assistant
+and asks it to *"implement token signing and refresh from scratch."*
+The AI happily produces 200 lines of custom security code. By the
+time code review catches it three days later, the developer has
+shipped two more features on top and is deep in a different branch.
 
-Same story for *"add a MongoDB connection"* when the policy is
-PostgreSQL-only, or *"use lodash to dedupe this array"* when lodash
-was banned eighteen months ago. The rules exist. The AI doesn't know
-them. The developer forgot — or never read the doc in the first place.
+Same story when a prompt asks for a database driver that isn't on
+the approved list, or pulls in a utility library the team migrated
+off of last year. The rules exist. The AI doesn't know them. The
+developer forgot — or never read the doc in the first place.
 
 stackguard catches the violation **before** the prompt reaches the AI.
 It compares each prompt to your engineering policy doc, flags
@@ -34,7 +34,7 @@ seconds, with no infrastructure to set up.
 
 ```
                 ┌────────────────────────┐
-   Developer ──▶│   "add MongoDB conn"   │
+   Developer ──▶│   "add a DB connection"│
                 └──────────┬─────────────┘
                            ▼
                 ┌────────────────────────┐
@@ -68,10 +68,10 @@ stackguard init
 export ANTHROPIC_API_KEY=sk-ant-...
 
 # Direct check
-stackguard check "implement JWT auth from scratch"
+stackguard check "implement token signing from scratch"
 
 # Wrap your AI assistant
-stackguard wrap -- claude "add MongoDB connection"
+stackguard wrap -- claude "add a database connection"
 
 # Set it as your default
 alias claude='stackguard wrap -- claude'
@@ -82,9 +82,11 @@ alias claude='stackguard wrap -- claude'
 ## What it checks vs. what it doesn't
 
 **It checks:**
-- Explicit prohibited libraries ("use lodash", "add axios")
-- Explicit prohibited tech ("add MongoDB", "use Auth0")
-- Explicit prohibited patterns ("implement JWT from scratch")
+- Prompts that name a library your policy excludes
+- Prompts that name a database, framework, or service outside
+  your approved stack
+- Prompts that ask for security primitives your team has agreed
+  to delegate to a shared wrapper
 
 **It does not check:**
 - Vague prompts ("build a login page") — there's nothing to flag yet
@@ -99,8 +101,8 @@ complements, not replaces, linters, CI checks, and code review.
 ## Team rollout guide
 
 1. **Write your policy.** Start from `examples/policy.example.md`.
-   The more explicit ("NEVER use MongoDB"), the better stackguard
-   performs. Vague guidelines produce vague checks.
+   The more explicit your rules are, the better stackguard performs.
+   Vague guidelines produce vague checks.
 
 2. **Lock the policy hash.** Run `stackguard policy hash` and paste
    the output into `stackguard.json` as `policyHash`. This prevents
@@ -114,9 +116,9 @@ complements, not replaces, linters, CI checks, and code review.
    checked by default. Opting out is explicit, not accidental.
 
 5. **Review the audit log weekly.** `stackguard audit --days 7`
-   shows what was overridden and why. Patterns ("everyone is
-   overriding the lodash rule") tell you whether the policy needs
-   updating or whether the rule needs to be more strongly enforced.
+   shows what was overridden and why. Patterns — the same rule
+   getting overridden by everyone — tell you whether the policy
+   needs updating or whether the rule needs to be enforced harder.
 
 ---
 

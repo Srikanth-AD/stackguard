@@ -17,7 +17,7 @@ In another terminal:
 ```bash
 node dist/index.js --help
 node dist/index.js init
-node dist/index.js check "implement JWT auth from scratch"
+node dist/index.js check "implement token signing from scratch"
 ```
 
 ## Manual testing
@@ -32,8 +32,9 @@ The most important paths to exercise before opening a PR:
    — should never block on input, must exit non-zero in block mode.
 4. **`stackguard wrap -- echo hello`** — should pass through and
    echo "hello".
-5. **`stackguard wrap -- claude "add MongoDB"`** — full flow including
-   revising the prompt and re-running the wrapped command.
+5. **`stackguard wrap -- claude "add a database connection"`** — full
+   flow including revising the prompt and re-running the wrapped
+   command (use a prompt your example policy will actually flag).
 6. **`stackguard policy hash`** then setting `policyHash` in
    `stackguard.json` — verify hash mismatch detection.
 
