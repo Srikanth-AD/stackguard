@@ -59,6 +59,54 @@ seconds, with no infrastructure to set up.
 
 ---
 
+## What it looks like
+
+A clean prompt is invisible:
+
+```
+$ stackguard check "build a settings page where users can change their display name"
+✓ stackguard: ok
+```
+
+A prompt that conflicts with your policy stops and shows you why:
+
+```
+$ stackguard check "add a MongoDB connection for user sessions"
+
+⚠  stackguard: guideline conflict detected
+──────────────────────────────────────────────────────────────────────
+
+"add a MongoDB connection for user sessions"
+Rule:   NEVER use MongoDB, DynamoDB, or any NoSQL store for primary
+        data.
+Why:    The prompt names a database that the policy excludes.
+Level:  HIGH confidence
+
+Suggested revision:
+┌──────────────────────────────────────────────────────────┐
+│ Add a Postgres-backed user_sessions table accessed via │
+│ the team's approved DB wrapper, with a parameterized   │
+│ query for lookups                                      │
+└──────────────────────────────────────────────────────────┘
+
+[P]roceed anyway  [R]evise  [S]how policy  [C]ancel
+> r
+Use suggested revision? [Y]es / [N]o, type my own: y
+✓ stackguard: ok
+```
+
+A possible-but-uncertain conflict surfaces as a soft note and lets the prompt through (see [ADR-002](./docs/adr/ADR-002-low-confidence-passthrough.md)):
+
+```
+$ stackguard check "add a date picker that handles timezones nicely"
+ℹ  stackguard: possible conflict (low confidence — passing through)
+"date picker that handles timezones" may conflict with "moment is prohibited…"
+```
+
+For more examples — including Python, Go, fintech, and a deliberately tiny two-person policy — see [`examples/`](./examples/).
+
+---
+
 ## Quickstart
 
 ```bash
@@ -90,7 +138,25 @@ git add .claude/settings.json  # commit so the rest of the team gets it
 
 Now every prompt you submit to Claude Code in this project is checked first.
 A clean prompt passes through invisibly. A blocked prompt shows the violation
-in the Claude Code UI and waits for you to revise.
+in the Claude Code UI and waits for you to revise:
+
+```
+> add a MongoDB connection for user sessions
+
+✗ stackguard: prompt blocked by engineering policy
+
+• "add a MongoDB connection for user sessions"
+  Rule:  NEVER use MongoDB, DynamoDB, or any NoSQL store for primary data
+  Why:   The prompt names a database that the policy excludes.
+  Level: HIGH confidence
+
+Suggested revision:
+  Add a Postgres-backed user_sessions table accessed via the team's
+  approved DB wrapper, with a parameterized query for lookups
+
+Edit your prompt and submit again, or run `stackguard policy show`
+to read the full policy.
+```
 
 **Block mode vs warn mode:** in `block` mode the hook returns exit 2 and
 Claude Code refuses to send the prompt. In `warn` mode the violation gets
