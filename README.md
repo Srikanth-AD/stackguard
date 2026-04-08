@@ -131,7 +131,7 @@ modification produces a hash mismatch and stackguard refuses to run
 until the team's official hash is updated.
 
 This makes policy updates a deliberate, reviewable act:
-1. Engineering manager edits the policy
+1. SME or engineering lead edits the policy
 2. Runs `stackguard policy hash`
 3. Updates `policyHash` in `stackguard.json`
 4. Both changes go through PR review together
