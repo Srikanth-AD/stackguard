@@ -48,9 +48,7 @@ export async function auditCommand(options: AuditOptions): Promise<void> {
     const d = new Date(e.timestamp)
     const date = d.toISOString().slice(0, 10)
     const time = d.toISOString().slice(11, 19)
-    console.log(
-      `${date} ${time}  ${e.user}  [${e.action}]`
-    )
+    console.log(`${date} ${time}  ${e.user}  [${e.action}]`)
     console.log(`Prompt:  "${truncate(e.prompt, 60)}"`)
     if (e.action === 'overridden' && e.overrideReason) {
       console.log(`Reason:  "${e.overrideReason}"`)

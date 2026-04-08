@@ -2,7 +2,9 @@
   "name": "stackguard",
   "version": "0.1.0",
   "description": "Pre-prompt policy enforcement for AI coding assistants. Checks developer prompts against company engineering guidelines before they reach the AI.",
-  "bin": { "stackguard": "./dist/index.js" },
+  "bin": {
+    "stackguard": "./dist/index.js"
+  },
   "type": "module",
   "license": "MIT",
   "author": "Srikanth AD",
@@ -21,9 +23,17 @@
     "README.md"
   ],
   "keywords": [
-    "ai-governance", "engineering-management", "developer-tools",
-    "tech-stack", "policy-enforcement", "claude-code", "copilot",
-    "cursor", "guardrails", "devex", "prompt-security"
+    "ai-governance",
+    "engineering-management",
+    "developer-tools",
+    "tech-stack",
+    "policy-enforcement",
+    "claude-code",
+    "copilot",
+    "cursor",
+    "guardrails",
+    "devex",
+    "prompt-security"
   ],
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
@@ -32,14 +42,22 @@
     "ora": "^8.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.10",
     "@types/node": "^20.0.0",
-    "typescript": "^5.3.0",
-    "tsup": "^8.0.0"
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "lint": "biome lint",
+    "format": "biome format --write",
+    "format:check": "biome format",
+    "check": "biome check",
+    "test": "tsx --test tests/**/*.test.ts",
     "prepublishOnly": "npm run build"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

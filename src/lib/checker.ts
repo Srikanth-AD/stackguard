@@ -46,11 +46,7 @@ Exact format required:
 async function logDebug(content: string): Promise<void> {
   try {
     await fs.mkdir(path.dirname(DEBUG_LOG), { recursive: true })
-    await fs.appendFile(
-      DEBUG_LOG,
-      `[${new Date().toISOString()}]\n${content}\n\n`,
-      'utf-8'
-    )
+    await fs.appendFile(DEBUG_LOG, `[${new Date().toISOString()}]\n${content}\n\n`, 'utf-8')
   } catch {
     // ignore
   }
@@ -86,11 +82,7 @@ export async function checkPrompt(
   model: string
 ): Promise<CheckResult> {
   if (!apiKey) {
-    console.error(
-      chalk.yellow(
-        '⚠  stackguard: ANTHROPIC_API_KEY not set, passing through'
-      )
-    )
+    console.error(chalk.yellow('⚠  stackguard: ANTHROPIC_API_KEY not set, passing through'))
     return passthrough()
   }
 
@@ -120,18 +112,14 @@ ${prompt}`
     const textBlock = response.content.find((b) => b.type === 'text')
     if (!textBlock || textBlock.type !== 'text') {
       await logDebug(`No text block in response: ${JSON.stringify(response)}`)
-      console.error(
-        chalk.yellow('⚠  stackguard: empty API response, passing through')
-      )
+      console.error(chalk.yellow('⚠  stackguard: empty API response, passing through'))
       return passthrough()
     }
     raw = textBlock.text
   } catch (err) {
     const msg = (err as Error).message || String(err)
     await logDebug(`API/network error: ${msg}`)
-    console.error(
-      chalk.yellow(`⚠  stackguard: check failed (${msg}), passing through`)
-    )
+    console.error(chalk.yellow(`⚠  stackguard: check failed (${msg}), passing through`))
     return passthrough()
   }
 
@@ -140,11 +128,7 @@ ${prompt}`
     parsed = JSON.parse(extractJson(raw))
   } catch (err) {
     await logDebug(`Non-JSON response: ${raw}`)
-    console.error(
-      chalk.yellow(
-        '⚠  stackguard: malformed API response, passing through'
-      )
-    )
+    console.error(chalk.yellow('⚠  stackguard: malformed API response, passing through'))
     return passthrough()
   }
 
@@ -153,10 +137,7 @@ ${prompt}`
         quote: String(v.quote ?? ''),
         rule: String(v.rule ?? ''),
         explanation: String(v.explanation ?? ''),
-        confidence:
-          v.confidence === 'high' || v.confidence === 'medium'
-            ? v.confidence
-            : 'low',
+        confidence: v.confidence === 'high' || v.confidence === 'medium' ? v.confidence : 'low',
       }))
     : []
 
@@ -164,13 +145,9 @@ ${prompt}`
     passed: parsed.passed === true,
     violations,
     suggestedRevision:
-      typeof parsed.suggestedRevision === 'string'
-        ? parsed.suggestedRevision
-        : null,
+      typeof parsed.suggestedRevision === 'string' ? parsed.suggestedRevision : null,
     confidence:
-      parsed.confidence === 'high' || parsed.confidence === 'medium'
-        ? parsed.confidence
-        : 'low',
+      parsed.confidence === 'high' || parsed.confidence === 'medium' ? parsed.confidence : 'low',
   }
 
   // Low-confidence-only override

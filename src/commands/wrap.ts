@@ -56,14 +56,9 @@ function execChild(command: string, args: string[]): void {
   })
 }
 
-export async function wrapCommand(
-  rawArgs: string[],
-  options: WrapOptions
-): Promise<void> {
+export async function wrapCommand(rawArgs: string[], options: WrapOptions): Promise<void> {
   if (rawArgs.length === 0) {
-    console.error(
-      chalk.red('✗ stackguard wrap: no command specified after --')
-    )
+    console.error(chalk.red('✗ stackguard wrap: no command specified after --'))
     process.exit(1)
   }
 
@@ -85,11 +80,7 @@ export async function wrapCommand(
   }
 
   if (prompt === null) {
-    console.error(
-      chalk.yellow(
-        '⚠  stackguard: could not identify prompt argument, skipping check'
-      )
-    )
+    console.error(chalk.yellow('⚠  stackguard: could not identify prompt argument, skipping check'))
     execChild(command, args)
     return
   }
@@ -97,12 +88,8 @@ export async function wrapCommand(
   let config = await loadConfig()
   if (!config && !options.policy) {
     console.error(chalk.red('✗ stackguard: no stackguard.json found'))
-    console.error(
-      "Run 'stackguard init' to set up policy checking for this project,"
-    )
-    console.error(
-      'or pass --policy <path> to check against a policy file directly.'
-    )
+    console.error("Run 'stackguard init' to set up policy checking for this project,")
+    console.error('or pass --policy <path> to check against a policy file directly.')
     process.exit(1)
   }
   if (!config) {
@@ -192,13 +179,9 @@ export async function wrapCommand(
 
     if (action === 'proceed') {
       if (config.logOverrides) {
-        await writeAudit(
-          currentPrompt,
-          result,
-          overrideReason ? 'overridden' : 'passed',
-          config,
-          { overrideReason }
-        )
+        await writeAudit(currentPrompt, result, overrideReason ? 'overridden' : 'passed', config, {
+          overrideReason,
+        })
       }
       // Replace prompt arg in args if revised
       execChild(command, args)

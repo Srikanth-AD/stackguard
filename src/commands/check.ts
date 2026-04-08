@@ -16,19 +16,12 @@ interface CheckOptions {
 
 function noConfigError(): never {
   console.error(chalk.red('✗ stackguard: no stackguard.json found'))
-  console.error(
-    "Run 'stackguard init' to set up policy checking for this project,"
-  )
-  console.error(
-    'or pass --policy <path> to check against a policy file directly.'
-  )
+  console.error("Run 'stackguard init' to set up policy checking for this project,")
+  console.error('or pass --policy <path> to check against a policy file directly.')
   process.exit(1)
 }
 
-export async function checkCommand(
-  prompt: string,
-  options: CheckOptions
-): Promise<void> {
+export async function checkCommand(prompt: string, options: CheckOptions): Promise<void> {
   let config = await loadConfig()
   if (!config && !options.policy) {
     noConfigError()
@@ -61,9 +54,7 @@ export async function checkCommand(
       try {
         const re = new RegExp(pattern, 'i')
         if (re.test(prompt)) {
-          console.log(
-            chalk.green('✓ stackguard: skipped (informational prompt)')
-          )
+          console.log(chalk.green('✓ stackguard: skipped (informational prompt)'))
           process.exit(0)
         }
       } catch {
@@ -150,13 +141,7 @@ async function runInteractive(
     if (action === 'proceed') {
       if (config.logOverrides) {
         const auditAction = overrideReason ? 'overridden' : 'passed'
-        await writeAudit(
-          currentPrompt,
-          currentResult,
-          auditAction,
-          config,
-          { overrideReason }
-        )
+        await writeAudit(currentPrompt, currentResult, auditAction, config, { overrideReason })
       }
       process.exit(0)
     }

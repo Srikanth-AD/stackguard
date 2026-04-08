@@ -53,32 +53,21 @@ async function loadFromUrl(url: string): Promise<string> {
     // Try cache fallback
     try {
       const cached = await fs.readFile(cachePath, 'utf-8')
-      console.error(
-        chalk.yellow(
-          `⚠  stackguard: failed to fetch policy, using cached copy`
-        )
-      )
+      console.error(chalk.yellow(`⚠  stackguard: failed to fetch policy, using cached copy`))
       return cached
     } catch {
-      throw new Error(
-        `Failed to fetch policy from ${url}: ${(err as Error).message}`
-      )
+      throw new Error(`Failed to fetch policy from ${url}: ${(err as Error).message}`)
     }
   }
 }
 
 async function loadFromFile(filePath: string): Promise<string> {
   const expanded = expandHome(filePath)
-  const resolved = path.isAbsolute(expanded)
-    ? expanded
-    : path.resolve(process.cwd(), expanded)
+  const resolved = path.isAbsolute(expanded) ? expanded : path.resolve(process.cwd(), expanded)
   return fs.readFile(resolved, 'utf-8')
 }
 
-export async function loadPolicy(
-  source: string,
-  config?: Config
-): Promise<PolicyDocument> {
+export async function loadPolicy(source: string, config?: Config): Promise<PolicyDocument> {
   let content: string
   if (source.startsWith('https://')) {
     content = await loadFromUrl(source)
@@ -97,16 +86,12 @@ export async function loadPolicy(
   if (config?.policyHash) {
     const expected = config.policyHash.replace(/^sha256:/, '')
     if (expected !== hash) {
-      console.error(
-        chalk.red(`✗ stackguard: policy document hash mismatch`)
-      )
+      console.error(chalk.red(`✗ stackguard: policy document hash mismatch`))
       console.error(`Expected: ${config.policyHash}`)
       console.error(`Got:      sha256:${hash}`)
       console.error('')
       console.error('The policy may have been modified or is out of date.')
-      console.error(
-        'Contact your engineering manager to update the expected'
-      )
+      console.error('Contact your engineering manager to update the expected')
       console.error('hash in stackguard.json.')
       process.exit(1)
     }
@@ -114,14 +99,8 @@ export async function loadPolicy(
     tipShown = true
     console.error(chalk.gray(`ℹ  Policy loaded: ${source}`))
     console.error(chalk.gray(`Hash: sha256:${hash}`))
-    console.error(
-      chalk.gray(
-        `Tip: add "policyHash": "sha256:${hash}" to stackguard.json`
-      )
-    )
-    console.error(
-      chalk.gray(`to enforce document integrity across your team.`)
-    )
+    console.error(chalk.gray(`Tip: add "policyHash": "sha256:${hash}" to stackguard.json`))
+    console.error(chalk.gray(`to enforce document integrity across your team.`))
   }
 
   return policy

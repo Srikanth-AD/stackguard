@@ -61,10 +61,7 @@ export async function loadConfig(): Promise<Config | null> {
   return config as Config
 }
 
-export async function writeConfig(
-  filePath: string,
-  config: Partial<Config>
-): Promise<void> {
+export async function writeConfig(filePath: string, config: Partial<Config>): Promise<void> {
   await fs.writeFile(filePath, JSON.stringify(config, null, 2) + '\n', 'utf-8')
 }
 

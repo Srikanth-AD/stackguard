@@ -87,11 +87,7 @@ export async function renderCheckResult(
 
   // CASE 2: low-confidence only
   if (result.lowConfidenceOnly) {
-    console.log(
-      chalk.gray(
-        'ℹ  stackguard: possible conflict (low confidence — passing through)'
-      )
-    )
+    console.log(chalk.gray('ℹ  stackguard: possible conflict (low confidence — passing through)'))
     for (const v of result.violations) {
       const line = `"${v.quote}" may conflict with "${v.rule}"`
       console.log(chalk.gray(truncate(line, MAX_WIDTH)))
@@ -105,22 +101,15 @@ export async function renderCheckResult(
   console.log('─'.repeat(MAX_WIDTH))
   console.log('')
 
-  result.violations.forEach((v, i) =>
+  result.violations.forEach((v, i) => {
     printViolation(v, i, result.violations.length)
-  )
+  })
 
   if (result.suggestedRevision) {
     printRevisionBox(result.suggestedRevision)
   }
 
-  await showMenu(
-    result,
-    mode,
-    onProceed,
-    onRevise,
-    onShowPolicy,
-    onCancel
-  )
+  await showMenu(result, mode, onProceed, onRevise, onShowPolicy, onCancel)
 }
 
 async function showMenu(
@@ -154,9 +143,7 @@ async function showMenu(
 
     if (key === 'r') {
       if (result.suggestedRevision) {
-        const yn = (
-          await ask('Use suggested revision? [Y]es / [N]o, type my own: ')
-        )
+        const yn = (await ask('Use suggested revision? [Y]es / [N]o, type my own: '))
           .trim()
           .toLowerCase()
         if (yn === '' || yn.startsWith('y')) {

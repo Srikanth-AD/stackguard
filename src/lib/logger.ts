@@ -3,10 +3,7 @@ import path from 'node:path'
 import type { AuditEntry } from '../types.js'
 import { expandHome } from './config.js'
 
-export async function logEntry(
-  entry: AuditEntry,
-  logPath: string
-): Promise<void> {
+export async function logEntry(entry: AuditEntry, logPath: string): Promise<void> {
   try {
     const expanded = expandHome(logPath)
     await fs.mkdir(path.dirname(expanded), { recursive: true })

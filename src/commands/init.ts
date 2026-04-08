@@ -18,14 +18,10 @@ function ask(question: string): Promise<string> {
 }
 
 export async function initCommand(): Promise<void> {
-  const policySource = (
-    await ask('Policy document source (file path or HTTPS URL): ')
-  ).trim()
+  const policySource = (await ask('Policy document source (file path or HTTPS URL): ')).trim()
 
   let mode: 'warn' | 'block' = 'warn'
-  const modeAnswer = (await ask('Mode — warn or block? [warn]: '))
-    .trim()
-    .toLowerCase()
+  const modeAnswer = (await ask('Mode — warn or block? [warn]: ')).trim().toLowerCase()
   if (modeAnswer === 'block') mode = 'block'
 
   let logOverrides = true
@@ -47,16 +43,12 @@ export async function initCommand(): Promise<void> {
   console.log('')
   console.log('Next steps:')
   console.log('')
-  console.log(
-    '  • Commit stackguard.json to your repo (contains no secrets)'
-  )
+  console.log('  • Commit stackguard.json to your repo (contains no secrets)')
   console.log('  • Set ANTHROPIC_API_KEY in your shell environment')
   console.log('  • stackguard check "your prompt here"')
   console.log('  • stackguard wrap -- claude "your prompt"')
   console.log('')
   console.log('To lock the policy hash (recommended for teams):')
   console.log('  stackguard policy hash')
-  console.log(
-    '  Then add the output to stackguard.json as "policyHash"'
-  )
+  console.log('  Then add the output to stackguard.json as "policyHash"')
 }
