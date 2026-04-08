@@ -96,7 +96,7 @@ complements, not replaces, linters, CI checks, and code review.
 
 ---
 
-## Team rollout guide (for engineering managers)
+## Team rollout guide
 
 1. **Write your policy.** Start from `examples/policy.example.md`.
    The more explicit ("NEVER use MongoDB"), the better stackguard
@@ -133,19 +133,6 @@ This makes policy updates a deliberate, reviewable act:
 2. Runs `stackguard policy hash`
 3. Updates `policyHash` in `stackguard.json`
 4. Both changes go through PR review together
-
----
-
-## Comparison
-
-|                           | stackguard | CodeGate     | Tabnine Enterprise | CLAUDE.md         |
-|---------------------------|:----------:|:------------:|:------------------:|:-----------------:|
-| Open source               | ✅         | ✅           | ❌                 | ✅                |
-| Pre-prompt                | ✅         | ✅           | ❌                 | ✅                |
-| Enforced                  | ✅         | ✅           | ✅                 | ❌                |
-| Zero setup                | ✅         | ❌ Docker    | ❌                 | ✅                |
-| Tech stack rules          | ✅         | ❌           | ✅                 | advisory only     |
-| Audit log                 | ✅         | ❌           | ❌                 | ❌                |
 
 ---
 
